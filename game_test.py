@@ -19,7 +19,11 @@ class Camera:
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
-        super().__init__(tiles_group, all_sprites)
+        if 'wall' in tile_type:
+            group = wall_group
+        else:
+            group = walk_group
+        super().__init__(group, all_sprites)
         self.image = tile_images[tile_type]
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
@@ -30,7 +34,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(player_group, all_sprites)
         self.image = player_image
         self.rect = self.image.get_rect().move(
-            tile_width * pos_x + 15, tile_height * pos_y + 5)
+            tile_width * pos_x, tile_height * pos_y)
 
 
 def load_image(name, colorkey=None):
@@ -48,8 +52,8 @@ def terminate():
     sys.exit()
 
 
-def load_level(filename):
-    filename = "levels/" + filename + '.txt'
+def load_level(pack, filename):
+    filename = "level/" + pack + '/' + filename + '.txt'
     try:
         with open(filename, 'r') as mapFile:
             level_map = [line.strip() for line in mapFile]
@@ -85,9 +89,9 @@ def generate_level(level):
     new_player, xx, yy = None, None, None
     for y in range(len(level)):
         for x in range(len(level[y])):
-            if level[y][x] == '.':
-                Tile('empty', x, y)
-            elif level[y][x] == '#':
+            Tile('empty', x, y)
+    for y in range(len(level)):
+            if level[y][x] == '#':
                 Tile('wall', x, y)
             elif level[y][x] == '@':
                 Tile('empty', x, y)
@@ -100,10 +104,11 @@ def generate_level(level):
 tile_images = {
     'wall': load_image('box.png'),
     'empty': load_image('grass.png')}
-player_image = load_image('mar.png')
-tile_width = tile_height = 50
+player_image = load_image('character', 'DLE.png')
+player_image = pygame.transform.scale(player_image, (100, 72))
+tile_width = tile_height = 100
 pygame.init()
-size = width, height = 400, 300
+size = width, height = 800, 400
 screen = pygame.display.set_mode(size)
 screen.fill((255, 255, 255))
 FPS = 50
@@ -112,14 +117,15 @@ start_screen()
 startsc = True
 player = None
 all_sprites = pygame.sprite.Group()
-tiles_group = pygame.sprite.Group()
+walk_group = pygame.sprite.Group()
+wall_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 camera = Camera()
 level = [[]]
 marx = None
 mary = None
 mario = None
-level_name = "1"
+level_name = "6"
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
