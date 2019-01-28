@@ -24,7 +24,8 @@ class Tile(pygame.sprite.Sprite):
         else:
             group = walk_group
         super().__init__(group, all_sprites)
-        self.image = tile_images[tile_type]
+        self.image = load_image(level_name, tile_type[4:])
+        self.image = pygame.transform.scale(self.image, dict1[tile_type])
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
@@ -91,19 +92,79 @@ def generate_level(level):
         for x in range(len(level[y])):
             Tile('empty', x, y)
     for y in range(len(level)):
-            if level[y][x] == '#':
-                Tile('wall', x, y)
+            if level[y][x] == 's':
+                Tile('wallstones_9', x, y)
             elif level[y][x] == '@':
-                Tile('empty', x, y)
                 xx = x
                 yy = y
                 new_player = Player(x, y)
+            elif level[y][x] == 'S':
+                Tile('wallstones_7', x, y)
+            elif level[y][x] == 'p':
+                Tile('walldecor_1', x, y)
+            elif level[y][x] == 'l':
+                Tile('walllake', x, y)
+            elif level[y][x] == 'b':
+                Tile('walldecor_6', x, y)
+            elif level[y][x] == 'd':
+                Tile('walldecor_5', x, y)
+            elif level[y][x] == 'y':
+                Tile('walldecor_3', x, y)
+            elif level[y][x] == 'r':
+                Tile('walldecor_8', x, y)
+            elif level[y][x] == 'z':
+                Tile('walldecor_2', x, y)
+            elif level[y][x] == 'k':
+                Tile('walldecor_7', x, y)
+            elif level[y][x] == 'f':
+                Tile('wallbuilding_3', x, y)
+            elif level[y][x] == 'w':
+                Tile('wallbuilding_2', x, y)
+            elif level[y][x] == 'W':
+                Tile('wallbuilding_1', x, y)
+            elif level[y][x] == 'O':
+                Tile('wallbuilding_5', x, y)
+            elif level[y][x] == 'P':
+                Tile('wallbuilding_4', x, y)
+            elif level[y][x] == '1':
+                Tile('walkgreenery_1', x, y)
+            elif level[y][x] == '2':
+                Tile('walkgreenery_2', x, y)
+            elif level[y][x] == '3':
+                Tile('walkgreenery_3', x, y)
+            elif level[y][x] == '4':
+                Tile('walkgreenery_4', x, y)
+            elif level[y][x] == '5':
+                Tile('walkgreenery_5', x, y)
+            elif level[y][x] == '6':
+                Tile('walkgreenery_6', x, y)
+            elif level[y][x] == '7':
+                Tile('walkgreenery_7', x, y)
+            elif level[y][x] == '8':
+                Tile('walkgreenery_8', x, y)
+            elif level[y][x] == '9':
+                Tile('walkgreenery_9', x, y)
+            elif level[y][x] == 'J':
+                Tile('wallstones_2', x, y)
+            elif level[y][x] == 'K':
+                Tile('walkgreenery_1', x, y)
+            elif level[y][x] == 'L':
+                Tile('walkgreenery_2', x, y)
+            elif level[y][x] == 'D':
+                Tile('walkgreenery_4', x, y)
+            elif level[y][x] == 'E':
+                Tile('walkgreenery_5', x, y)
+            elif level[y][x] == 'Q':
+                Tile('walkgreenery_9', x, y)
+            elif level[y][x] == 'g':
+                Tile('walkgreenery_10', x, y)
+
     return new_player, xx, yy
 
 
-tile_images = {
-    'wall': load_image('box.png'),
-    'empty': load_image('grass.png')}
+level6_bib = {'wallstones_9': (100, 100), 'wallstones_7': (100, 100), 'wallstones_2': (100, 100),
+              'walldecor_1': (350, 300), 'walllake': (500, 200), 'walldecor_6': (100, 100),
+              'walldecor_5': (200, 100), 'wallbuilding_3': (100, 200)}
 player_image = load_image('character', 'DLE.png')
 player_image = pygame.transform.scale(player_image, (100, 72))
 tile_width = tile_height = 100
@@ -126,6 +187,7 @@ marx = None
 mary = None
 mario = None
 level_name = "6"
+dict1 = level6_bib
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
