@@ -1,5 +1,4 @@
 import pygame
-import os
 import sys
 
 
@@ -24,7 +23,7 @@ class Tile(pygame.sprite.Sprite):
         else:
             group = walk_group
         super().__init__(group, all_sprites)
-        self.image = load_image(level_name, tile_type[4:])
+        self.image = load_image(level_name, tile_type[4:], 'png')
         self.image = pygame.transform.scale(self.image, dict1[tile_type])
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
@@ -38,8 +37,8 @@ class Player(pygame.sprite.Sprite):
             tile_width * pos_x, tile_height * pos_y)
 
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
+def load_image(pack, name, png,colorkey=None):
+    fullname = 'data/' + pack + '/' + name + '.' + png
     try:
         image = pygame.image.load(fullname)
         return image
@@ -53,8 +52,8 @@ def terminate():
     sys.exit()
 
 
-def load_level(pack, filename):
-    filename = "level/" + pack + '/' + filename + '.txt'
+def load_level(filename):
+    filename = "level/" + filename + '.txt'
     try:
         with open(filename, 'r') as mapFile:
             level_map = [line.strip() for line in mapFile]
@@ -72,7 +71,7 @@ def start_screen():
                   "Ходить можно только по траве",
                   "Цели пока что нет"]
 
-    fon = pygame.transform.scale(load_image('fon.jpg'), (width, height))
+    fon = pygame.transform.scale(load_image('fon', 'fon', 'jpg'), (width, height))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
     text_coord = 50
@@ -90,8 +89,10 @@ def generate_level(level):
     new_player, xx, yy = None, None, None
     for y in range(len(level)):
         for x in range(len(level[y])):
-            Tile('empty', x, y)
+            Tile('walkgrass', x, y)
     for y in range(len(level)):
+        for x in range(len(level[y])):
+            print(level[y][x])
             if level[y][x] == 's':
                 Tile('wallstones_9', x, y)
             elif level[y][x] == '@':
@@ -109,6 +110,7 @@ def generate_level(level):
             elif level[y][x] == 'd':
                 Tile('walldecor_5', x, y)
             elif level[y][x] == 'y':
+                # дорожка
                 Tile('walldecor_3', x, y)
             elif level[y][x] == 'r':
                 Tile('walldecor_8', x, y)
@@ -127,23 +129,23 @@ def generate_level(level):
             elif level[y][x] == 'P':
                 Tile('wallbuilding_4', x, y)
             elif level[y][x] == '1':
-                Tile('walkgreenery_1', x, y)
+                Tile('walktree_1', x, y)
             elif level[y][x] == '2':
-                Tile('walkgreenery_2', x, y)
+                Tile('walktree_2', x, y)
             elif level[y][x] == '3':
-                Tile('walkgreenery_3', x, y)
+                Tile('walktree_3', x, y)
             elif level[y][x] == '4':
-                Tile('walkgreenery_4', x, y)
+                Tile('walktree_4', x, y)
             elif level[y][x] == '5':
-                Tile('walkgreenery_5', x, y)
+                Tile('walktree_5', x, y)
             elif level[y][x] == '6':
-                Tile('walkgreenery_6', x, y)
+                Tile('walktree_6', x, y)
             elif level[y][x] == '7':
-                Tile('walkgreenery_7', x, y)
+                Tile('walktree_7', x, y)
             elif level[y][x] == '8':
-                Tile('walkgreenery_8', x, y)
+                Tile('walktree_8', x, y)
             elif level[y][x] == '9':
-                Tile('walkgreenery_9', x, y)
+                Tile('walktree_9', x, y)
             elif level[y][x] == 'J':
                 Tile('wallstones_2', x, y)
             elif level[y][x] == 'K':
@@ -164,9 +166,17 @@ def generate_level(level):
 
 level6_bib = {'wallstones_9': (100, 100), 'wallstones_7': (100, 100), 'wallstones_2': (100, 100),
               'walldecor_1': (350, 300), 'walllake': (500, 200), 'walldecor_6': (100, 100),
-              'walldecor_5': (200, 100), 'wallbuilding_3': (100, 200)}
-player_image = load_image('character', 'DLE.png')
-player_image = pygame.transform.scale(player_image, (100, 72))
+              'walldecor_5': (200, 100), 'wallbuilding_3': (100, 200), 'wallbuilding_2': (400, 100),
+              'wallbuilding_1': (400, 400), 'wallbuilding_5': (200, 200), 'wallbuilding_4': (100, 200),
+              'walldecor_3': (100, 100), 'walldecor_8': (200, 100), 'walldecor_2': (200, 200),
+              'walldecor_7': (100, 100), 'walktree_1': (150, 150), 'walktree_2': (150, 150),
+              'walktree_3': (100, 150), 'walktree_4': (50, 150), 'walktree_5': (100, 150), 'walktree_6': (100, 150),
+              'walktree_7': (100, 150), 'walktree_8': (100, 200), 'walktree_9': (200, 300),
+              'walkgreenery_1': (100, 200), 'walkgreenery_2': (100, 100), 'walkgreenery_4': (100, 100),
+              'walkgreenery_5': (50, 100), 'walkgreenery_9': (150, 150), 'walkgreenery_10': (50, 50),
+              'walkgrass': (100, 100)}
+player_image = load_image('character', 'DLE', 'png')
+player_image = pygame.transform.scale(player_image, (200, 100))
 tile_width = tile_height = 100
 pygame.init()
 size = width, height = 800, 400
