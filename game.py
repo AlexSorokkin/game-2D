@@ -6,6 +6,8 @@ class Camera:
     def __init__(self):
         self.dx = 0
         self.dy = 0
+        self.x = 1240 / 2
+        self.y = 768 / 2
 
     def apply(self, obj):
         obj.rect.x += self.dx
@@ -13,15 +15,14 @@ class Camera:
 
     def update(self, target):
         self.dx = -(target.rect.x + target.rect.w // 2 - width // 2)
+        self.x -= self.dx
         self.dy = -(target.rect.y + target.rect.h // 2 - height // 2)
+        self.y -= self.dy
 
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
-        if 'wall' in tile_type:
-            group = wall_group
-        else:
-            group = walk_group
+        group = wall_group
         super().__init__(group, all_sprites)
         if tile_type == 'walkgrass':
             self.image = image_grass
@@ -36,8 +37,21 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
         self.image = player_image
+        self.images = []
+        self.count = 0
+        for i in range(11):
+            self.images.append(load_image('character', 'Run\Running_0' + str(i + 1), 'png'))
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
+
+    def stopped(self):
+        self.image = player_image
+        self.count = 0
+
+    def go(self):
+        self.image = self.images[self.count]
+        self.count = (self.count + 1) % 11
+
 
 
 def load_image(pack, name, png, colorkey=None):
@@ -183,13 +197,12 @@ pygame.init()
 size = width, height = 1240, 768
 screen = pygame.display.set_mode(size)
 screen.fill((255, 255, 255))
-FPS = 50
+FPS = 25
 clock = pygame.time.Clock()
 start_screen()
 startsc = True
 player = None
 all_sprites = pygame.sprite.Group()
-walk_group = pygame.sprite.Group()
 wall_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 camera = Camera()
@@ -200,6 +213,13 @@ mario = None
 level_name = "6"
 image_grass = load_image(level_name, 'grass', 'png')
 image_stone = load_image(level_name, 'stone', 'png')
+g_right = False
+g_left = False
+g_up = False
+g_down = False
+reverse = False
+went = False
+walkfree = ['@', '.', 't', 'T', 'v', 'V', 'g']
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -210,25 +230,81 @@ while True:
             startsc = False
             level = load_level(level_name)
             player = generate_level(level)
-            mario = player[0]
             marx = player[1]
-            mary = player[2]
+            marx += 0.6
+            mary = player[2] + 0.8
+            player = player[0]
             if not startsc:
-                camera.update(mario)
+                camera.update(player)
                 for sprite in all_sprites:
                     camera.apply(sprite)
         elif not startsc:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    mario.rect.y -= 50
+                    g_up = True
                 if event.key == pygame.K_LEFT:
-                    mario.rect.x -= 50
+                    g_left = True
                 if event.key == pygame.K_DOWN:
-                    mario.rect.y += 50
+                    g_down = True
                 if event.key == pygame.K_RIGHT:
-                    mario.rect.x += 50
+                    g_right = True
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP:
+                    g_up = False
+                    player.stopped()
+                if event.key == pygame.K_LEFT:
+                    g_left = False
+                    player.stopped()
+                if event.key == pygame.K_DOWN:
+                    g_down = False
+                    player.stopped()
+                if event.key == pygame.K_RIGHT:
+                    g_right = False
+                    player.stopped()
+    if g_up:
+        mary -= 0.08
+        test = int(mary)
+        if level[test][int(marx)] in walkfree:
+            player.rect.y -= 8
+            went = True
+            reverse = True
+        else:
+            mary += 0.08
+    if g_down:
+        mary += 0.08
+        test = int(mary)
+        if level[test][int(marx)] in walkfree:
+            player.rect.y += 8
+            went = True
+            reverse = False
+        else:
+            mary -= 0.08
+    if g_right:
+        marx += 0.08
+        test = int(marx)
+        if level[int(mary)][test] in walkfree:
+            player.rect.x += 8
+            went = True
+            reverse = False
+        else:
+            marx -= 0.08
+    if g_left:
+        marx -= 0.08
+        test = int(marx)
+        if level[int(mary)][test] in walkfree:
+            player.rect.x -= 8
+            went = True
+            reverse = True
+        else:
+            marx += 0.08
+    if went:
+        player.go()
+        went = False
+    if reverse:
+        player.image = pygame.transform.flip(player.image, 1, 0)
+        reverse = False
     if not startsc:
-        camera.update(mario)
+        camera.update(player)
         for sprite in all_sprites:
             camera.apply(sprite)
     all_sprites.draw(screen)
