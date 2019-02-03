@@ -53,7 +53,6 @@ class Player(pygame.sprite.Sprite):
         self.count = (self.count + 1) % 11
 
 
-
 def load_image(pack, name, png, colorkey=None):
     fullname = 'data/' + pack + '/' + name + '.' + png
     try:
@@ -112,7 +111,8 @@ def generate_level(level):
             if level[y][x] == 's':
                 Tile('wallstone', x, y)
             elif level[y][x] == '@':
-                Tile('walklandleft', x, y)
+                if level_name == '6':
+                    Tile('walklandleft', x, y)
                 xx = x
                 yy = y
             elif level[y][x] == 'S':
@@ -186,17 +186,36 @@ def generate_level(level):
                 Tile('walklandlefter', x, y)
             elif level[y][x] == 'F':
                 Tile('wallzdanie', x, y)
+            elif level[y][x] == 'B':
+                Tile('walldown', x, y)
+                Tile('walltorg', x, y)
+            elif level[y][x] == '|':
+                Tile('walldown', x, y)
+            elif level[y][x] == "/":
+                Tile('walldown', x, y+0.7)
+            elif level[y][x] == "'":
+                Tile('wallleft', x, y)
+            elif level[y][x] == '"':
+                Tile('wallleft', x+0.7, y)
+            elif level[y][x] == '{':
+                Tile('wallleftup', x, y)
+            elif level[y][x] == '}':
+                Tile('wallrightup', x, y)
+            elif level[y][x] == '[':
+                Tile('walldownleft', x, y)
+            elif level[y][x] == ']':
+                Tile('walldownright', x, y)
     new_player = Player(xx, yy)
     return new_player, xx, yy
 
 
 player_image = load_image('character', 'DLE', 'png')
+loading_image = load_image('fon', 'loading', 'jpg')
 player_image = pygame.transform.scale(player_image, (100, 100))
 tile_width = tile_height = 100
 pygame.init()
 size = width, height = 1240, 768
 screen = pygame.display.set_mode(size)
-screen.fill((255, 255, 255))
 FPS = 25
 clock = pygame.time.Clock()
 start_screen()
@@ -229,15 +248,13 @@ while True:
             screen.fill((255, 255, 255))
             startsc = False
             level = load_level(level_name)
+            screen.blit(loading_image, (0, 0))
+            pygame.display.flip()
             player = generate_level(level)
             marx = player[1]
             marx += 0.6
             mary = player[2] + 0.8
             player = player[0]
-            if not startsc:
-                camera.update(player)
-                for sprite in all_sprites:
-                    camera.apply(sprite)
         elif not startsc:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
@@ -248,13 +265,42 @@ while True:
                     g_down = True
                 if event.key == pygame.K_RIGHT:
                     g_right = True
+                if event.key == pygame.K_e:
+                    if level[int(mary-1)][int(marx)] == 'Z':
+                        level_name = level_name + '_taverna'
+                        level = load_level(level_name)
+                        all_sprites = pygame.sprite.Group()
+                        wall_group = pygame.sprite.Group()
+                        player_group = pygame.sprite.Group()
+                        screen.blit(loading_image, (0, 0))
+                        pygame.display.flip()
+                        player = generate_level(level)
+                        marx = player[1]
+                        marx += 0.6
+                        mary = player[2] + 0.8
+                        player = player[0]
+                    elif level[int(mary+1)][int(marx)] == 'Z':
+                        level_name = level_name[0]
+                        level = load_level(level_name)
+                        all_sprites = pygame.sprite.Group()
+                        wall_group = pygame.sprite.Group()
+                        player_group = pygame.sprite.Group()
+                        screen.blit(loading_image, (0, 0))
+                        pygame.display.flip()
+                        player = generate_level(level)
+                        marx = player[1]
+                        marx += 0.6
+                        mary = player[2] + 0.8
+                        player = player[0]
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     g_up = False
                     player.stopped()
+                    reverse = True
                 if event.key == pygame.K_LEFT:
                     g_left = False
                     player.stopped()
+                    reverse = True
                 if event.key == pygame.K_DOWN:
                     g_down = False
                     player.stopped()
@@ -262,41 +308,41 @@ while True:
                     g_right = False
                     player.stopped()
     if g_up:
-        mary -= 0.08
+        mary -= 0.06
         test = int(mary)
         if level[test][int(marx)] in walkfree:
-            player.rect.y -= 8
+            player.rect.y -= 6
             went = True
             reverse = True
         else:
-            mary += 0.08
+            mary += 0.06
     if g_down:
-        mary += 0.08
+        mary += 0.06
         test = int(mary)
         if level[test][int(marx)] in walkfree:
-            player.rect.y += 8
+            player.rect.y += 6
             went = True
             reverse = False
         else:
-            mary -= 0.08
+            mary -= 0.06
     if g_right:
-        marx += 0.08
+        marx += 0.06
         test = int(marx)
         if level[int(mary)][test] in walkfree:
-            player.rect.x += 8
+            player.rect.x += 6
             went = True
             reverse = False
         else:
-            marx -= 0.08
+            marx -= 0.06
     if g_left:
-        marx -= 0.08
+        marx -= 0.06
         test = int(marx)
         if level[int(mary)][test] in walkfree:
-            player.rect.x -= 8
+            player.rect.x -= 6
             went = True
             reverse = True
         else:
-            marx += 0.08
+            marx += 0.06
     if went:
         player.go()
         went = False
@@ -307,6 +353,7 @@ while True:
         camera.update(player)
         for sprite in all_sprites:
             camera.apply(sprite)
+        screen.fill((0, 0, 0))
     all_sprites.draw(screen)
     pygame.display.flip()
     clock.tick(FPS)
