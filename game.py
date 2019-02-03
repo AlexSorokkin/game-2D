@@ -188,7 +188,9 @@ def generate_level(level):
                 Tile('wallzdanie', x, y)
             elif level[y][x] == 'B':
                 Tile('walldown', x, y)
-                Tile('walltorg', x, y)
+                Tile('walldown', x+1, y)
+                Tile('wallbaryg', x+0.5, y+1)
+                Tile('walltorg2', x, y)
             elif level[y][x] == '|':
                 Tile('walldown', x, y)
             elif level[y][x] == "/":
@@ -205,6 +207,12 @@ def generate_level(level):
                 Tile('walldownleft', x, y)
             elif level[y][x] == ']':
                 Tile('walldownright', x, y)
+            elif level[y][x] == '<':
+                Tile('wallvipit', x, y-0.5)
+            elif level[y][x] == '>':
+                Tile('wallpripravy', x, y-0.5)
+            elif level[y][x] == 'M':
+                Tile('wallmeshok', x, y)
     new_player = Player(xx, yy)
     return new_player, xx, yy
 
@@ -289,9 +297,11 @@ while True:
                         pygame.display.flip()
                         player = generate_level(level)
                         marx = player[1]
-                        marx += 0.6
-                        mary = player[2] + 0.8
+                        marx += 0.6 - 42
+                        mary = player[2] + 0.8 - 6
                         player = player[0]
+                        player.rect.x -= 4200
+                        player.rect.y -= 600
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     g_up = False
