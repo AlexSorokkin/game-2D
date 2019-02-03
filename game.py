@@ -113,6 +113,8 @@ def generate_level(level):
             elif level[y][x] == '@':
                 if level_name == '6':
                     Tile('walklandleft', x, y)
+                if level_name == '5':
+                    Tile('walklandleft', x, y)
                 xx = x
                 yy = y
             elif level[y][x] == 'S':
@@ -213,6 +215,8 @@ def generate_level(level):
                 Tile('wallpripravy', x, y-0.5)
             elif level[y][x] == 'M':
                 Tile('wallmeshok', x, y)
+            elif level[y][x] == '#':
+                Tile('walldecor_2!', x, y)
     new_player = Player(xx, yy)
     return new_player, xx, yy
 
@@ -297,11 +301,68 @@ while True:
                         pygame.display.flip()
                         player = generate_level(level)
                         marx = player[1]
-                        marx += 0.6 - 42
-                        mary = player[2] + 0.8 - 6
-                        player = player[0]
-                        player.rect.x -= 4200
-                        player.rect.y -= 600
+                        if level_name == '6':
+                            marx += 0.6 - 42
+                            mary = player[2] + 0.8 - 6
+                            player = player[0]
+                            player.rect.x -= 4200
+                            player.rect.y -= 600
+                    elif level[int(mary - 1)][int(marx)] == 'y' or level[int(mary + 1)][int(marx)] == 'y' or\
+                            level[int(mary)][int(marx+1)] == 'y' or level[int(mary)][int(marx - 1)] == 'y':
+                        if level_name == '6':
+                            level_name = '5'
+                            level = load_level(level_name)
+                            all_sprites = pygame.sprite.Group()
+                            wall_group = pygame.sprite.Group()
+                            player_group = pygame.sprite.Group()
+                            screen.blit(loading_image, (0, 0))
+                            pygame.display.flip()
+                            player = generate_level(level)
+                            marx = player[1]
+                            marx += 0.6
+                            mary = player[2] + 0.8
+                            player = player[0]
+                        elif level_name == '5':
+                            if level[int(mary)][int(marx - 1)] == 'y':
+                                level_name = '6'
+                                level = load_level(level_name)
+                                all_sprites = pygame.sprite.Group()
+                                wall_group = pygame.sprite.Group()
+                                player_group = pygame.sprite.Group()
+                                screen.blit(loading_image, (0, 0))
+                                pygame.display.flip()
+                                player = generate_level(level)
+                                marx = player[1]
+                                marx += 0.6
+                                mary = player[2] + 0.8
+                                player = player[0]
+                            elif level[int(mary)][int(marx + 1)] == 'y':
+                                level_name = '7'
+                                level = load_level(level_name)
+                                all_sprites = pygame.sprite.Group()
+                                wall_group = pygame.sprite.Group()
+                                player_group = pygame.sprite.Group()
+                                screen.blit(loading_image, (0, 0))
+                                pygame.display.flip()
+                                player = generate_level(level)
+                                marx = player[1]
+                                marx += 0.6
+                                mary = player[2] + 0.8
+                                player = player[0]
+                            elif level[int(mary - 1)][int(marx)] == 'y':
+                                level_name = '4'
+                                level = load_level(level_name)
+                                all_sprites = pygame.sprite.Group()
+                                wall_group = pygame.sprite.Group()
+                                player_group = pygame.sprite.Group()
+                                screen.blit(loading_image, (0, 0))
+                                pygame.display.flip()
+                                player = generate_level(level)
+                                marx = player[1]
+                                marx += 0.6
+                                mary = player[2] + 0.8
+                                player = player[0]
+
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     g_up = False
