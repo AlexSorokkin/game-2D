@@ -83,7 +83,6 @@ def load_level(filename):
 
 def start_screen():
     intro_text = ['pre-alpha v0.1']
-    fon = pygame.transform.scale(load_image('fon', 'fon', 'jpg'), (width, height))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 24)
     text_coord = 22
@@ -95,15 +94,27 @@ def start_screen():
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
     font = pygame.font.SysFont('Bauhaus 93', 30)
-    string_rendered = font.render("Press 'Enter' to continue", 1, pygame.Color('white'))
+    string_rendered = font.render("CONTINUE", 1, pygame.Color('white'))
     intro_rect = string_rendered.get_rect()
     intro_rect.top = 300
-    intro_rect.x = 480
+    intro_rect.x = 580
+    text_x = intro_rect.x
+    text_y = intro_rect.top
+    text_w = string_rendered.get_width()
+    text_h = string_rendered.get_height()
+    pygame.draw.rect(screen, (255, 255, 255), (text_x - 10, text_y - 10,
+                                           text_w + 20, text_h + 15), 2)
     screen.blit(string_rendered, intro_rect)
-    string_rendered = font.render("'Esc' for new game", 1, pygame.Color('white'))
+    string_rendered = font.render("NEW GAME", 1, pygame.Color('white'))
     intro_rect = string_rendered.get_rect()
     intro_rect.top = 350
-    intro_rect.x = 520
+    intro_rect.x = 576
+    text_x = intro_rect.x
+    text_y = intro_rect.top
+    text_w = string_rendered.get_width()
+    text_h = string_rendered.get_height()
+    pygame.draw.rect(screen, (255, 255, 255), (text_x - 10, text_y - 10,
+                                               text_w + 20, text_h + 15), 2)
     screen.blit(string_rendered, intro_rect)
 
 
@@ -233,6 +244,7 @@ player_image = pygame.transform.scale(player_image, (100, 100))
 tile_width = tile_height = 100
 pygame.init()
 size = width, height = 1240, 768
+fon = pygame.transform.scale(load_image('fon', 'fon', 'jpg'), (width, height))
 screen = pygame.display.set_mode(size)
 FPS = 25
 clock = pygame.time.Clock()
@@ -261,13 +273,14 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminate()
-        elif event.type == pygame.KEYDOWN and startsc:
-            if event.key == pygame.K_ESCAPE:
+        elif event.type == pygame.MOUSEBUTTONUP and startsc:
+            x, y = pygame.mouse.get_pos()
+            if 567 <= x <= 700 and 341 <= y <= 375:
                 my_file = open('load_saving.txt', 'w')
                 level_name = '1'
                 intro = True
                 my_file.write('1')
-            elif event.key == pygame.K_KP_ENTER:
+            elif 570 <= x <= 700 and 290 <= y <= 325:
                 with open('load_saving.txt', 'r') as mapFile:
                     level_map = [line.strip() for line in mapFile]
                     level_name = level_map[0][0]
@@ -440,5 +453,5 @@ while True:
             camera.apply(sprite)
         screen.fill((0, 0, 0))
     all_sprites.draw(screen)
-    pygame.display.flip()
     clock.tick(FPS)
+    pygame.display.flip()
