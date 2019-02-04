@@ -82,23 +82,29 @@ def load_level(filename):
 
 
 def start_screen():
-    intro_text = ["ЗАСТАВКА", "",
-                  "Правила игры",
-                  "Ходить можно только по траве",
-                  "Цели пока что нет"]
-
+    intro_text = ['pre-alpha v0.1']
     fon = pygame.transform.scale(load_image('fon', 'fon', 'jpg'), (width, height))
     screen.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 30)
-    text_coord = 50
+    font = pygame.font.Font(None, 24)
+    text_coord = 22
     for line in intro_text:
         string_rendered = font.render(line, 1, pygame.Color('black'))
         intro_rect = string_rendered.get_rect()
-        text_coord += 10
         intro_rect.top = text_coord
         intro_rect.x = 10
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
+    font = pygame.font.SysFont('Bauhaus 93', 30)
+    string_rendered = font.render("Press 'Enter' to continue", 1, pygame.Color('white'))
+    intro_rect = string_rendered.get_rect()
+    intro_rect.top = 300
+    intro_rect.x = 480
+    screen.blit(string_rendered, intro_rect)
+    string_rendered = font.render("'Esc' for new game", 1, pygame.Color('white'))
+    intro_rect = string_rendered.get_rect()
+    intro_rect.top = 350
+    intro_rect.x = 520
+    screen.blit(string_rendered, intro_rect)
 
 
 def generate_level(level):
@@ -255,8 +261,16 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminate()
-        elif (event.type == pygame.KEYDOWN or
-              event.type == pygame.MOUSEBUTTONDOWN) and startsc:
+        elif event.type == pygame.KEYDOWN and startsc:
+            if event.key == pygame.K_ESCAPE:
+                my_file = open('load_saving.txt', 'w')
+                level_name = '1'
+                intro = True
+                my_file.write('1')
+            elif event.key == pygame.K_KP_ENTER:
+                with open('load_saving.txt', 'r') as mapFile:
+                    level_map = [line.strip() for line in mapFile]
+                    level_name = level_map[0][0]
             screen.fill((255, 255, 255))
             startsc = False
             level = load_level(level_name)
