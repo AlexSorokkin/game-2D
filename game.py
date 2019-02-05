@@ -132,6 +132,8 @@ def generate_level(level):
                     Tile('walklandleft', x, y)
                 if level_name == '5':
                     Tile('walklandleft', x, y)
+                if level_name == '4':
+                    Tile('walklandup', x, y)
                 xx = x
                 yy = y
             elif level[y][x] == 'S':
@@ -234,6 +236,12 @@ def generate_level(level):
                 Tile('wallmeshok', x, y)
             elif level[y][x] == '#':
                 Tile('walldecor_2!', x, y)
+            elif level[y][x] == "F":
+                Tile('wallbuilding_9', x, y)
+            elif level[y][x] == "u":
+                Tile('walldecor_16', x, y)
+            elif level[y][x] == "U":
+                Tile('walldecor_4', x, y)
     new_player = Player(xx, yy)
     return new_player, xx, yy
 
@@ -257,6 +265,7 @@ player_group = pygame.sprite.Group()
 camera = Camera()
 level = [[]]
 marx = None
+marx2 = None
 mary = None
 mario = None
 level_name = "6"
@@ -292,6 +301,7 @@ while True:
             player = generate_level(level)
             marx = player[1]
             marx += 0.6
+            marx2 = marx - 0.2
             mary = player[2] + 0.8
             player = player[0]
         elif not startsc:
@@ -316,6 +326,7 @@ while True:
                         player = generate_level(level)
                         marx = player[1]
                         marx += 0.6
+                        marx2 = marx - 0.2
                         mary = player[2] + 0.8
                         player = player[0]
                     elif level[int(mary+1)][int(marx)] == 'Z':
@@ -328,10 +339,12 @@ while True:
                         pygame.display.flip()
                         player = generate_level(level)
                         marx = player[1]
+                        mary = player[2]
+                        player = player[0]
                         if level_name == '6':
                             marx += 0.6 - 42
-                            mary = player[2] + 0.8 - 6
-                            player = player[0]
+                            marx2 = marx - 0.2
+                            mary = mary + 0.8 - 6
                             player.rect.x -= 4200
                             player.rect.y -= 600
                     elif level[int(mary - 1)][int(marx)] == 'y' or level[int(mary + 1)][int(marx)] == 'y' or\
@@ -347,6 +360,7 @@ while True:
                             player = generate_level(level)
                             marx = player[1]
                             marx += 0.6
+                            marx2 = marx - 0.2
                             mary = player[2] + 0.8
                             player = player[0]
                         elif level_name == '5':
@@ -361,6 +375,7 @@ while True:
                                 player = generate_level(level)
                                 marx = player[1]
                                 marx += 0.6
+                                marx2 = marx - 0.2
                                 mary = player[2] + 0.8
                                 player = player[0]
                             elif level[int(mary)][int(marx + 1)] == 'y':
@@ -374,6 +389,7 @@ while True:
                                 player = generate_level(level)
                                 marx = player[1]
                                 marx += 0.6
+                                marx2 = marx - 0.2
                                 mary = player[2] + 0.8
                                 player = player[0]
                             elif level[int(mary - 1)][int(marx)] == 'y':
@@ -387,9 +403,27 @@ while True:
                                 player = generate_level(level)
                                 marx = player[1]
                                 marx += 0.6
+                                marx2 = marx - 0.2
                                 mary = player[2] + 0.8
                                 player = player[0]
-
+                        elif level_name == '4':
+                            if level[int(mary+1)][int(marx)] == 'y':
+                                level_name = '5'
+                                level = load_level(level_name)
+                                all_sprites = pygame.sprite.Group()
+                                wall_group = pygame.sprite.Group()
+                                player_group = pygame.sprite.Group()
+                                screen.blit(loading_image, (0, 0))
+                                pygame.display.flip()
+                                player = generate_level(level)
+                                marx = player[1]
+                                marx += 0.6
+                                mary = player[2] + 0.8 - 7
+                                player = player[0]
+                                marx += 25
+                                player.rect.x += 2500
+                                player.rect.y -= 700
+                                marx2 = marx - 0.2
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     g_up = False
@@ -408,7 +442,7 @@ while True:
     if g_up:
         mary -= 0.06
         test = int(mary)
-        if level[test][int(marx)] in walkfree:
+        if level[test][int(marx)] in walkfree and level[test][int(marx2)] in walkfree:
             player.rect.y -= 6
             went = True
             reverse = True
@@ -417,7 +451,7 @@ while True:
     if g_down:
         mary += 0.06
         test = int(mary)
-        if level[test][int(marx)] in walkfree:
+        if level[test][int(marx)] in walkfree and level[test][int(marx2)] in walkfree:
             player.rect.y += 6
             went = True
             reverse = False
@@ -425,22 +459,28 @@ while True:
             mary -= 0.06
     if g_right:
         marx += 0.06
+        marx2 += 0.06
+        test2 = int(marx2)
         test = int(marx)
-        if level[int(mary)][test] in walkfree:
+        if level[int(mary)][test] in walkfree and level[int(mary)][test2] in walkfree:
             player.rect.x += 6
             went = True
             reverse = False
         else:
             marx -= 0.06
+            marx2 -= 0.06
     if g_left:
         marx -= 0.06
+        marx2 -= 0.06
+        test2 = int(marx2)
         test = int(marx)
-        if level[int(mary)][test] in walkfree:
+        if level[int(mary)][test] in walkfree and level[int(mary)][test2] in walkfree:
             player.rect.x -= 6
             went = True
             reverse = True
         else:
             marx += 0.06
+            marx2 += 0.06
     if went:
         player.go()
         went = False
