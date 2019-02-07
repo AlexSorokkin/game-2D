@@ -140,6 +140,10 @@ def generate_level(level):
                     Tile('walklandleft', x, y)
                 elif level_name == '1':
                     Tile('walklandup', x, y)
+                elif level_name == '7':
+                    Tile('walklandleft', x, y)
+                elif level_name == '10':
+                    Tile('walklandleft', x, y)
                 xx = x
                 yy = y
             elif level[y][x] == 'S':
@@ -252,6 +256,10 @@ def generate_level(level):
                 Tile('walldecor_4', x, y)
             elif level[y][x] == "$":
                 Tile('walklandleft', x, y)
+            elif level[y][x] == "Y":
+                if level_name == '10':
+                    Tile('walklandleft', x, y)
+                Tile('walldecor_33', x, y)
     new_player = Player(xx, yy)
     return new_player, xx, yy
 
@@ -302,7 +310,7 @@ while True:
             elif 570 <= x <= 700 and 290 <= y <= 325:
                 with open('load_saving.txt', 'r') as mapFile:
                     level_map = [line.strip() for line in mapFile]
-                    level_name = level_map[0][0]
+                    level_name = level_map[0]
             screen.fill((255, 255, 255))
             startsc = False
             level = load_level(level_name)
@@ -362,8 +370,10 @@ while True:
                             marx2 = marx - 0.2
                             mary = mary + 0.8
                             player.rect.x -= 3000
-                    elif level[int(mary - 1)][int(marx)] == 'y' or level[int(mary + 1)][int(marx)] == 'y' or\
-                            level[int(mary)][int(marx+1)] == 'y' or level[int(mary)][int(marx - 1)] == 'y':
+                    elif level[int(mary - 1)][int(marx)].lower() == 'y' or\
+                            level[int(mary + 1)][int(marx)].lower() == 'y' or\
+                            level[int(mary)][int(marx+1)].lower() == 'y' or\
+                            level[int(mary)][int(marx - 1)].lower() == 'y':
                         if level_name == '6':
                             level_name = '5'
                             level = load_level(level_name)
@@ -531,11 +541,61 @@ while True:
                                 player = player[0]
                                 player.rect.x -= 2800
                                 player.rect.y += 500
+                        elif level_name == '7':
+                            if level[int(mary)][int(marx-1)] == 'y':
+                                level_name = '2'
+                                level = load_level(level_name)
+                                all_sprites = pygame.sprite.Group()
+                                wall_group = pygame.sprite.Group()
+                                player_group = pygame.sprite.Group()
+                                screen.blit(loading_image, (0, 0))
+                                pygame.display.flip()
+                                player = generate_level(level)
+                                marx = player[1]
+                                marx += 0.6 - 50
+                                marx2 = marx - 0.2
+                                mary = player[2] + 0.8
+                                player = player[0]
+                                player.rect.x -= 5000
+                        elif level_name == '10':
+                            if level[int(mary)][int(marx + 1)] == 'y':
+                                level_name = '11'
+                                level = load_level(level_name)
+                                all_sprites = pygame.sprite.Group()
+                                wall_group = pygame.sprite.Group()
+                                player_group = pygame.sprite.Group()
+                                screen.blit(loading_image, (0, 0))
+                                pygame.display.flip()
+                                player = generate_level(level)
+                                marx = player[1]
+                                marx += 0.6
+                                marx2 = marx - 0.2
+                                mary = player[2] + 0.8
+                                player = player[0]
+                        elif level_name == '11':
+                            if level[int(mary)][int(marx - 1)] == 'y':
+                                level_name = '10'
+                                level = load_level(level_name)
+                                all_sprites = pygame.sprite.Group()
+                                wall_group = pygame.sprite.Group()
+                                player_group = pygame.sprite.Group()
+                                screen.blit(loading_image, (0, 0))
+                                pygame.display.flip()
+                                player = generate_level(level)
+                                marx = player[1]
+                                marx += 0.6 - 10
+                                marx2 = marx - 0.2
+                                mary = player[2] + 0.8
+                                player = player[0]
+                                player.rect.x -= 1000
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     g_up = False
                     player.stopped()
-                    reverse = True
+                    if level_name != '7':
+                        reverse = True
+                    else:
+                        reverse = False
                 if event.key == pygame.K_LEFT:
                     g_left = False
                     player.stopped()
@@ -543,6 +603,8 @@ while True:
                 if event.key == pygame.K_DOWN:
                     g_down = False
                     player.stopped()
+                    if level_name == '7':
+                        reverse = True
                 if event.key == pygame.K_RIGHT:
                     g_right = False
                     player.stopped()
@@ -552,7 +614,10 @@ while True:
         if level[test][int(marx)] in walkfree and level[test][int(marx2)] in walkfree:
             player.rect.y -= 6
             went = True
-            reverse = True
+            if level_name != '7':
+                reverse = True
+            else:
+                reverse = False
         else:
             mary += 0.06
     if g_down:
@@ -561,7 +626,10 @@ while True:
         if level[test][int(marx)] in walkfree and level[test][int(marx2)] in walkfree:
             player.rect.y += 6
             went = True
-            reverse = False
+            if level_name != '7':
+                reverse = False
+            else:
+                reverse = True
         else:
             mary -= 0.06
     if g_right:
