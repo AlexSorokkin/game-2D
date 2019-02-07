@@ -675,6 +675,23 @@ while True:
                                 mary = player[2] + 0.8 - 12
                                 player = player[0]
                                 player.rect.y -= 1200
+                        elif level_name == '9':
+                            if level[int(mary)][int(marx+1)] == 'y':
+                                level_name = '8'
+                                level = load_level(level_name)
+                                all_sprites = pygame.sprite.Group()
+                                wall_group = pygame.sprite.Group()
+                                player_group = pygame.sprite.Group()
+                                screen.blit(loading_image, (0, 0))
+                                pygame.display.flip()
+                                player = generate_level(level)
+                                marx = player[1]
+                                marx += 0.6 - 12
+                                marx2 = marx - 0.2
+                                mary = player[2] + 0.8 - 5
+                                player = player[0]
+                                player.rect.y -= 500
+                                player.rect.x -= 1200
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     g_up = False

@@ -9,8 +9,8 @@ ssssss...........................X..............XXXXX.b.............ssssss
 ssssss....................PPP.PPP...4.....3.........dX......9X......ssssss
 ssssss...FX......WXXX.....XXX.XXX...X.....X.................XX......ssssss
 ssssss...XX......XXXX.OXX.tttvttt........1.....5............XX......ssssss
-ssssss..fXXf.....XXXX.XXX.PPPT...........X.....X......4.............ssssss
-ssssss..XXXX.wXXXXXrX.XZX.XXXT.....6...4...2......3...X......3......ssssss
+ssssss..fXXf.wXXXXXXX.XXX.PPPT...........X.....X......4.............ssssss
+ssssss..XXXX.....XXrX.XZX.XXXT.....6...4...2......3...X......3......ssssss
 sssssstttttttttttttttttttttttttv.......X...X......X..........X......ssssss
 ssssss..5...5...5...5...5...5..T.....9X...7....8X........5....2.....ssssss
 ssssss..1..7...1..7.X6..X4..X..T..3..XX...X....XX...6....X....X.....ssssss
