@@ -294,6 +294,12 @@ def cutscene1():
     global screen
     global level_name
     global loading_image
+    global marx2
+    global marx
+    global mary
+    global all_sprites
+    global wall_group
+    global player_group
     brothrun = []
     brothdie = []
     secslash = []
@@ -417,19 +423,6 @@ def cutscene1():
         seconds += 0.04
         clock.tick(FPS)
         pygame.display.flip()
-    screen.fill((255, 255, 255))
-    level_name = '2'
-    level = load_level(level_name)
-    screen.blit(loading_image, (0, 0))
-    pygame.display.flip()
-    player = generate_level(level)
-    marx = player[1]
-    marx += 0.6 - 28
-    marx2 = marx - 0.2
-    mary = player[2] + 0.8 + 5
-    player = player[0]
-    player.rect.x -= 2800
-    player.rect.y += 500
     cutloading = True
     return
 
@@ -939,5 +932,21 @@ while True:
         all_sprites.draw(screen)
     if cutscene:
         cutscenes()
+        if level_name == '1':
+            level_name = '2'
+            level = load_level(level_name)
+            all_sprites = pygame.sprite.Group()
+            wall_group = pygame.sprite.Group()
+            player_group = pygame.sprite.Group()
+            screen.blit(loading_image, (0, 0))
+            pygame.display.flip()
+            player = generate_level(level)
+            marx = player[1]
+            marx += 0.6 - 28
+            marx2 = marx - 0.2
+            mary = player[2] + 0.8 + 5
+            player = player[0]
+            player.rect.x -= 2800
+            player.rect.y += 500
     clock.tick(FPS)
     pygame.display.flip()
