@@ -477,7 +477,7 @@ while True:
             if 567 <= x <= 700 and 341 <= y <= 375:
                 my_file = open('load_saving.txt', 'w')
                 level_name = '1'
-                my_file.write('1')
+                my_file.write('2')
                 startsc = False
                 cutscene = True
             elif 570 <= x <= 700 and 290 <= y <= 325:
