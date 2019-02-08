@@ -20,6 +20,16 @@ class Camera:
         self.y -= self.dy
 
 
+class Character(pygame.sprite.Sprite):
+    def __init__(self, images):
+        group = wall_group
+        super().__init__(group, all_sprites)
+        self.image = images
+        self.rect = self.image.get_rect()
+        self.rect.x = 7000
+        self.rect.y = 7000
+
+
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         group = wall_group
@@ -272,6 +282,100 @@ def generate_level(level):
     return new_player, xx, yy
 
 
+def cutscenes():
+    if level_name == '1':
+        cutscene1()
+
+
+def cutscene1():
+    global cutloading
+    global cutscene
+    global player
+    global screen
+    global level_name
+    global loading_image
+    brothrun = []
+    brothdie = []
+    secslash = []
+    magwalk = []
+    brothcount = 0
+    percount = 0
+    seccount = 0
+    thircount = 0
+    walk = True
+    per = None
+    sec = None
+    thir = None
+    mag = None
+    broth = None
+    string1 = ''
+    string2 = ''
+    seconds = 0
+    font1 = load_image('fon', 'font', 'png')
+    font = pygame.font.SysFont('Bauhaus 93', 40)
+    font_1 = (100, 564)
+    font_2 = (100, 664)
+    while cutscene:
+        if cutloading:
+            player.rect.x = 500
+            player.rect.y = 1400
+            brothimage = load_image('characters2', 'broth', 'png')
+            broth = Character(brothimage)
+            broth.rect.y = 1300
+            broth.rect.x = 500
+            peri = load_image('characters2', 'per', 'png')
+            seci = load_image('characters2', 'sec', 'png')
+            thiri = load_image('characters2', 'thir', 'png')
+            per = Character(peri)
+            sec = Character(seci)
+            thir = Character(thiri)
+            magi = load_image('characters2', 'mag', 'png')
+            mag = Character(magi)
+            for i in range(11):
+                brothrun.append(load_image('characters2', 'runbroth\Running_0' + str(i + 1), 'png'))
+            for i in range(14):
+                brothdie.append(load_image('characters2', 'diebroth\Dying_0' + str(i + 1), 'png'))
+            for i in range(11):
+                secslash.append(load_image('characters2', 'secslash\Rogue_Slashing_0' + str(i + 1), 'png'))
+            for i in range(11):
+                magwalk.append(load_image('characters2', 'magwalk\Running_0' + str(i + 1), 'png'))
+            cutloading = False
+        if walk:
+            brothcount = (brothcount + 1) % 11
+            broth.image = brothrun[brothcount]
+            player.go()
+            player.rect.x += 3
+            broth.rect.x += 3
+            print(seconds, player.rect.x)
+            if seconds == 30:
+                walk = False
+        if seconds == 0:
+            string1 = font.render("Сэм: Артур, помнишь Джека?", 1, pygame.Color('black'))
+            string2 = font.render("", 1, pygame.Color('black'))
+        camera.update(player)
+        for sprite in all_sprites:
+            camera.apply(sprite)
+        all_sprites.draw(screen)
+        screen.blit(font1, (0, 534))
+        screen.blit(string1, font_1)
+        screen.blit(string2, font_2)
+        seconds += 0.04
+        clock.tick(FPS)
+        pygame.display.flip()
+    screen.fill((255, 255, 255))
+    level = load_level(level_name)
+    screen.blit(loading_image, (0, 0))
+    pygame.display.flip()
+    player = generate_level(level)
+    marx = player[1]
+    marx += 0.6
+    marx2 = marx - 0.2
+    mary = player[2] + 0.8
+    player = player[0]
+    cutloading = True
+    return
+
+
 player_image = load_image('character', 'DLE', 'png')
 loading_image = load_image('fon', 'loading', 'jpg')
 player_image = pygame.transform.scale(player_image, (100, 100))
@@ -303,6 +407,8 @@ g_up = False
 g_down = False
 reverse = False
 went = False
+cutscene = False
+cutloading = True
 walkfree = ['@', '.', 't', 'T', 'v', 'V', 'g']
 while True:
     for event in pygame.event.get():
@@ -313,14 +419,15 @@ while True:
             if 567 <= x <= 700 and 341 <= y <= 375:
                 my_file = open('load_saving.txt', 'w')
                 level_name = '1'
-                intro = True
                 my_file.write('1')
+                startsc = False
+                cutscene = True
             elif 570 <= x <= 700 and 290 <= y <= 325:
                 with open('load_saving.txt', 'r') as mapFile:
                     level_map = [line.strip() for line in mapFile]
                     level_name = level_map[0]
+                    startsc = False
             screen.fill((255, 255, 255))
-            startsc = False
             level = load_level(level_name)
             screen.blit(loading_image, (0, 0))
             pygame.display.flip()
@@ -330,7 +437,7 @@ while True:
             marx2 = marx - 0.2
             mary = player[2] + 0.8
             player = player[0]
-        elif not startsc:
+        elif not startsc and not cutscene:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     g_up = True
@@ -766,11 +873,13 @@ while True:
     if reverse:
         player.image = pygame.transform.flip(player.image, 1, 0)
         reverse = False
-    if not startsc:
+    if not startsc and not cutscene:
         camera.update(player)
         for sprite in all_sprites:
             camera.apply(sprite)
         screen.fill((0, 0, 0))
-    all_sprites.draw(screen)
+        all_sprites.draw(screen)
+    if cutscene:
+        cutscenes()
     clock.tick(FPS)
     pygame.display.flip()
