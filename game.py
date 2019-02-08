@@ -305,21 +305,28 @@ def cutscene1():
     walk = True
     per = None
     sec = None
+    summa = 0
     thir = None
     mag = None
     broth = None
+    dim = None
     string1 = ''
     string2 = ''
+    string3 = ''
     seconds = 0
+    walk2 = False
     font1 = load_image('fon', 'font', 'png')
     font = pygame.font.SysFont('Bauhaus 93', 40)
-    font_1 = (100, 564)
-    font_2 = (100, 664)
+    font_1 = (336, 564)
+    font_2 = (336, 594)
+    font_3 = (336, 624)
     while cutscene:
         if cutloading:
             player.rect.x = 500
             player.rect.y = 1400
             brothimage = load_image('characters2', 'broth', 'png')
+            dimi = load_image('characters2', 'dim', 'png')
+            dim = Character(dimi)
             broth = Character(brothimage)
             broth.rect.y = 1300
             broth.rect.x = 500
@@ -346,32 +353,83 @@ def cutscene1():
             player.go()
             player.rect.x += 3
             broth.rect.x += 3
-            print(seconds, player.rect.x)
-            if seconds == 30:
+            if seconds >= 30:
                 walk = False
+                player.stopped()
+                broth.image = load_image('characters2', 'broth', 'png')
+        if walk2:
+            pass
         if seconds == 0:
             string1 = font.render("Сэм: Артур, помнишь Джека?", 1, pygame.Color('black'))
             string2 = font.render("", 1, pygame.Color('black'))
+            string3 = font.render("", 1, pygame.Color('black'))
+        if seconds >= 5:
+            string1 = font.render('Атрут: Да,конечно, его не забыть.', 1, pygame.Color('black'))
+            string2 = font.render("", 1, pygame.Color('black'))
+            string3 = font.render("", 1, pygame.Color('black'))
+        if seconds >= 10:
+            string1 = font.render("Сэм: Так вот ,этот негодяй подбил ", 1, pygame.Color('black'))
+            string2 = font.render("на одно дело.", 1, pygame.Color('black'))
+        if seconds >= 15:
+            string1 = font.render('Атрут: Так, Сэм, во что ты ввязался ?', 1, pygame.Color('black'))
+            string2 = font.render("", 1, pygame.Color('black'))
+            string3 = font.render("", 1, pygame.Color('black'))
+        if seconds >= 20:
+            string1 = font.render("Сэм: Эх...Как только мы проникли в дом,", 1, pygame.Color('black'))
+            string2 = font.render("нас заметили охранники. Началась ", 1, pygame.Color('black'))
+            string3 = font.render("перестрелка, и... Джэк убил его сына", 1, pygame.Color('black'))
+        if seconds >= 25:
+            string1 = font.render('Атрут: Что? Чёрт тебя подери ,', 1, pygame.Color('black'))
+            string2 = font.render("что вы наделали ,Сэм?", 1, pygame.Color('black'))
+            string3 = font.render("", 1, pygame.Color('black'))
+        if seconds >= 30:
+            string1 = font.render('Пшшшшшшшшш', 1, pygame.Color('black'))
+            string2 = font.render("", 1, pygame.Color('black'))
+            string3 = font.render("*Чпоньк*", 1, pygame.Color('black'))
+            dim.rect.x = 673
+            dim.rect.y = 234
+        if seconds >= 32:
+            dim.rect.x = 10000
+            dim.rect.y = 10000
+            sec.rect.x = 673
+            sec.rect.y = 234
+            per.rect.x = 723
+            per.rect.y = 250
+            thir.rect.x = 673
+            thir.rect.y = 334
+            string1 = font.render('Сэм(шёпотом): это те ребята.', 1, pygame.Color('black'))
+            string2 = font.render("И похоже, что они пришли за мной.", 1, pygame.Color('black'))
+            string3 = font.render("Сэм(громко): Что вам надо от нас?", 1, pygame.Color('black'))
+        if seconds >= 37:
+            string1 = font.render('На данный момент всё', 1, pygame.Color('black'))
+            string2 = font.render("Можете 'наслаждаться' открытым миром", 1, pygame.Color('black'))
+            string3 = font.render("Продолжение позже", 1, pygame.Color('black'))
+        if seconds >= 42:
+            cutscene = False
         camera.update(player)
         for sprite in all_sprites:
             camera.apply(sprite)
         all_sprites.draw(screen)
-        screen.blit(font1, (0, 534))
+        screen.blit(font1, (236, 534))
         screen.blit(string1, font_1)
         screen.blit(string2, font_2)
+        screen.blit(string3, font_3)
         seconds += 0.04
         clock.tick(FPS)
         pygame.display.flip()
     screen.fill((255, 255, 255))
+    level_name = '2'
     level = load_level(level_name)
     screen.blit(loading_image, (0, 0))
     pygame.display.flip()
     player = generate_level(level)
     marx = player[1]
-    marx += 0.6
+    marx += 0.6 - 28
     marx2 = marx - 0.2
-    mary = player[2] + 0.8
+    mary = player[2] + 0.8 + 5
     player = player[0]
+    player.rect.x -= 2800
+    player.rect.y += 500
     cutloading = True
     return
 
@@ -398,7 +456,7 @@ marx = None
 marx2 = None
 mary = None
 mario = None
-level_name = "6"
+level_name = "1"
 image_grass = load_image(level_name, 'grass', 'png')
 image_stone = load_image(level_name, 'stone', 'png')
 g_right = False
