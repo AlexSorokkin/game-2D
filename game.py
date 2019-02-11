@@ -603,14 +603,14 @@ while True:  # Игровой цикл
             string2 = font.render("", 1, pygame.Color('black'))
             string3 = font.render("", 1, pygame.Color('black'))
         if seconds >= 5:
-            string1 = font.render('Атрут: Да,конечно, его не забыть.', 1, pygame.Color('black'))
+            string1 = font.render('Артут: Да,конечно, его не забыть.', 1, pygame.Color('black'))
             string2 = font.render("", 1, pygame.Color('black'))
             string3 = font.render("", 1, pygame.Color('black'))
         if seconds >= 10:
             string1 = font.render("Сэм: Так вот ,этот негодяй подбил ", 1, pygame.Color('black'))
             string2 = font.render("на одно дело.", 1, pygame.Color('black'))
         if seconds >= 15:
-            string1 = font.render('Атрут: Так, Сэм, во что ты ввязался ?', 1, pygame.Color('black'))
+            string1 = font.render('Артут: Так, Сэм, во что ты ввязался ?', 1, pygame.Color('black'))
             string2 = font.render("", 1, pygame.Color('black'))
             string3 = font.render("", 1, pygame.Color('black'))
         if seconds >= 20:
@@ -618,7 +618,7 @@ while True:  # Игровой цикл
             string2 = font.render("нас заметили охранники. Началась ", 1, pygame.Color('black'))
             string3 = font.render("перестрелка, и... Джэк убил его сына", 1, pygame.Color('black'))
         if seconds >= 25:
-            string1 = font.render('Атрут: Что? Чёрт тебя подери ,', 1, pygame.Color('black'))
+            string1 = font.render('Артут: Что? Чёрт тебя подери ,', 1, pygame.Color('black'))
             string2 = font.render("что вы наделали ,Сэм?", 1, pygame.Color('black'))
             string3 = font.render("", 1, pygame.Color('black'))
         if seconds >= 30:
@@ -670,5 +670,10 @@ while True:  # Игровой цикл
             player = player[0]
             player.rect.x -= 2800
             player.rect.y += 500
+    if not startsc and not cutscene:
+        camera.update(player)
+        for sprite in all_sprites:
+            camera.apply(sprite)
+        all_sprites.draw(screen)
     clock.tick(FPS)
     pygame.display.flip()
