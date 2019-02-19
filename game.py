@@ -1,6 +1,8 @@
 import pygame
 from functions import load_image, load_level, terminate, generate_level, start_screen
 from classes import Character, Camera, Tile, Player
+import json
+from pathlib import Path
 
 
 player_image = load_image('character', 'DLE', 'png')
@@ -71,19 +73,22 @@ while True:  # Игровой цикл
         elif event.type == pygame.MOUSEBUTTONUP and startsc:  # Заставка
             x, y = pygame.mouse.get_pos()
             if 567 <= x <= 700 and 341 <= y <= 375:
-                my_file = open('load_saving.txt', 'w')
+                path = Path('load_saving.json')
+                data = json.loads(path.read_text(encoding='utf-8'))
+                data['first']['checkpoint'] = 2
+                path.write_text(json.dumps(data), encoding='utf-8')
                 level_name = '1'
-                my_file.write('2')
                 startsc = False
                 cutscene = True
                 checkpoint = '1'
             elif 570 <= x <= 700 and 290 <= y <= 325:
-                with open('load_saving.txt', 'r') as mapFile:
-                    level_map = [line.strip() for line in mapFile]
-                    checkpoint = level_map[0]
-                    if checkpoint == '2':
-                        level_name = '2'
-                    startsc = False
+                path = Path('load_saving.json')
+                data = json.loads(path.read_text(encoding='utf-8'))
+                checkpoint = data['first']['checkpoint']
+                path.write_text(json.dumps(data), encoding='utf-8')
+                if checkpoint == '2':
+                    level_name = '2'
+                startsc = False
             screen.fill((255, 255, 255))
             level = load_level(level_name)
             screen.blit(loading_image, (0, 0))
@@ -656,6 +661,7 @@ while True:  # Игровой цикл
         seconds += 0.04
         if not cutscene:
             level_name = '2'
+            checkpoint = '2'
             level = load_level(level_name)
             all_sprites = pygame.sprite.Group()
             wall_group = pygame.sprite.Group()
