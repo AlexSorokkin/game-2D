@@ -110,8 +110,10 @@ while True:  # Игровой цикл
                     g_down = True
                 if event.key == pygame.K_RIGHT:
                     g_right = True
-                if event.key == pygame.K_e:  # Прогрузка уровней
-                    if level[int(mary-1)][int(marx)] == 'Z':
+                if event.key == pygame.K_e: # Взаимодействие
+                    if level_name == '2_taverna':
+                        pass
+                    if level[int(mary-1)][int(marx)] == 'Z':  # Прогрузка уровней
                         level_name = level_name + '_taverna'
                         level = load_level(level_name)
                         all_sprites = pygame.sprite.Group()
