@@ -3,6 +3,7 @@ from functions import load_image, load_level, terminate, generate_level, start_s
 from classes import Character, Camera, Tile, Player
 import json
 from pathlib import Path
+from requests import get
 
 
 player_image = load_image('character', 'DLE', 'png')
@@ -65,6 +66,7 @@ font_3 = (336, 624)
 checkpoint = ''
 cutscene = False
 cutloading = True
+web_level = False
 walkfree = ['@', '.', 't', 'T', 'v', 'V', 'g']
 while True:  # Игровой цикл
     for event in pygame.event.get():
@@ -86,15 +88,29 @@ while True:  # Игровой цикл
                 data = json.loads(path.read_text(encoding='utf-8'))
                 checkpoint = data['first']['checkpoint']
                 path.write_text(json.dumps(data), encoding='utf-8')
-                if checkpoint == '2':
+                if checkpoint == 2:
                     level_name = '2'
                 startsc = False
-            screen.fill((255, 255, 255))
-            level = load_level(level_name)
-            screen.blit(loading_image, (0, 0))
-            pygame.display.flip()
-            player = generate_level(level, Tile, level_name, Player, all_sprites, wall_group,
-                                    load_image, player_group)
+            elif 400 <= y <= 435 and 538 <= x <= 738:
+                per = get('http://127.0.0.1:8800/levels_get').json()
+                level_x = per['ok']
+                level_name = level_x[0]
+                level = level_x[1:]
+                level = level.split('\n')
+                screen.fill((255, 255, 255))
+                screen.blit(loading_image, (0, 0))
+                pygame.display.flip()
+                player = generate_level(level, Tile, level_name, Player, all_sprites, wall_group,
+                                        load_image, player_group)
+                startsc = False
+                web_level = True
+            if not web_level:
+                screen.fill((255, 255, 255))
+                level = load_level(level_name)
+                screen.blit(loading_image, (0, 0))
+                pygame.display.flip()
+                player = generate_level(level, Tile, level_name, Player, all_sprites, wall_group,
+                                        load_image, player_group)
             marx = player[1]
             marx += 0.6
             marx2 = marx - 0.2

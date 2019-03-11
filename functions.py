@@ -65,6 +65,17 @@ def start_screen(screen, fon):  # Main menu
     pygame.draw.rect(screen, (255, 255, 255), (text_x - 10, text_y - 10,
                                                text_w + 20, text_h + 15), 2)
     screen.blit(string_rendered, intro_rect)
+    string_rendered = font.render("Load lvl from Web", 1, pygame.Color('white'))
+    intro_rect = string_rendered.get_rect()
+    intro_rect.top = 400
+    intro_rect.x = 548
+    text_x = intro_rect.x
+    text_y = intro_rect.top
+    text_w = string_rendered.get_width()
+    text_h = string_rendered.get_height()
+    pygame.draw.rect(screen, (255, 255, 255), (text_x - 10, text_y - 10,
+                                               text_w + 20, text_h + 15), 2)
+    screen.blit(string_rendered, intro_rect)
 
 
 def generate_level(level, Tile, level_name, Player, all_sprites, wall_group, load_image, player_group):
